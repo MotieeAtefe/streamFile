@@ -10,7 +10,14 @@ namespace streamFile
         {
             string path = @"D:\c# practices\streamFile\StudentInfo.txt";
             List<Students> students=Students.ReadStudentsFromFile(path);
-            foreach (var student in students)
+       
+            //foreach (var student in students)
+            //{
+            //    Console.WriteLine(student);
+            //}
+            HashSet<Students> stdHash = new HashSet<Students>(students);
+           
+            foreach (var student in stdHash)
             {
                 Console.WriteLine(student);
             }

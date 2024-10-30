@@ -30,6 +30,7 @@ namespace streamFile
         }
         public static List<Students> ReadStudentsFromFile(string path)
         {
+            HashSet<Students> stdHash = new HashSet<Students>();
             List<Students> studentsList = new List<Students>();
 
             if (!File.Exists(path))
