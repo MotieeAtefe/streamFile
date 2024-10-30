@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -13,10 +14,10 @@ namespace streamFile
         public string _StudentName;
         public int _StudentNumber;
         public float _Grade;
-        public Students(string studentName, int _studentNumber, float Grade)
+        public Students(string studentName, int studentNumber, float Grade)
         {
             this._StudentName = studentName;
-            this._StudentNumber = _studentNumber;
+            this._StudentNumber = studentNumber;
             this._Grade = Grade;
         }
         public Students DeepCopy()
@@ -27,32 +28,45 @@ namespace streamFile
         {
             return $"{_StudentName} , {_StudentNumber} , {_Grade}";
         }
-        public static void spratorOprator(string path, List<Students> students)
+        public static List<Students> ReadStudentsFromFile(string path)
         {
-            string[] words;
-            students = new List<Students>();
-            char separator = ' ';
-            string[] part = File.ReadAllLines(path, System.Text.Encoding.UTF8);
-            foreach (string line in part)
+            List<Students> studentsList = new List<Students>();
+
+            if (!File.Exists(path))
             {
-                // stringsplitoptions options
-                words = line.Split(new char[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-                if (words.Length >= 3)
-                {
-                    string name = string.Join("", words, 0, words.Length - 2);
-                    int id = Convert.ToInt32(words[words.Length - 2]);
-                    float grade = float.Parse(words[words.Length - 1]);
-
-                    Students std = new Students(name.Trim(), id, grade);
-                    students.Add(std);
-                    Console.WriteLine(std.ToString());
-
-                }
-
+                Console.WriteLine("File is not found.");
+                return studentsList; 
             }
 
+            char separator = ' ';
+            string[] part = File.ReadAllLines(path, System.Text.Encoding.UTF8);
+            try
+            {
+                foreach (string line in part)
+                {
+                    string[] words = line.Split(new char[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                    if (words.Length >= 3)
+                    {
+                        string name = string.Join(" ", words, 0, words.Length - 2);
+                        int id = Convert.ToInt32(words[words.Length - 2]);
+                        float grade = float.Parse(words[words.Length - 1]);
+
+                        Students std = new Students(name.Trim(), id, grade);
+                        studentsList.Add(std.DeepCopy());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception while reading the file: " + ex.Message);
+            }
+
+            return studentsList; 
         }
+
+
     }
+           
 }
 
 
